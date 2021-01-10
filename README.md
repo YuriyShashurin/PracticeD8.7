@@ -1,7 +1,7 @@
 # Example todoapp project
 
 ### Развертывание проекта на локальном устройстве:
-В командной строке набираем: 
+##### В командной строке набираем: 
 1. git clone https://github.com/YuriyShashurin/PracticeD8.7.git
 2. Переходим в папку проекта: cd PracticeD8.7
 3. Создаем командное окружение и запускаем его
@@ -11,7 +11,7 @@
 5. запускаем проект python manage.py runserver
 
 ##### Вход в админку: 
-http://127.0.0.1:8000/admin/
+http://127.0.0.1:8000/admin/ <br/>
 
 Логин: pws_admin <br/>
 Пароль: sf_password
@@ -24,7 +24,7 @@ http://127.0.0.1:8000/admin/
 https://rocky-coast-74518.herokuapp.com/
 
 ##### Админка: 
-https://rocky-coast-74518.herokuapp.com/admin/
+https://rocky-coast-74518.herokuapp.com/admin/ <br/>
 Логин: pws_admin <br/>
 Пароль: sf_password
 
