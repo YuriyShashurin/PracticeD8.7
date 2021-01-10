@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from tasks.models import TodoItem, Category
-
+from tasks.models import TodoItem, Category, PriorityCount
+from django.views.decorators.cache import cache_page
+from datetime import datetime
 
 def index(request):
 
@@ -14,13 +15,16 @@ def index(request):
     # for t in Tag.objects.all()}
 
     # 3rd version
-    from django.db.models import Count
+    # from django.db.models import Count
+    #
+    # counts = Category.objects.annotate(total_tasks=Count(
+    #     'todoitem')).order_by("-total_tasks")
+    # counts = {c.name: c.total_tasks for c in counts}
+    context = {}
+    context['categories'] = Category.objects.all()
+    context['priorities'] = PriorityCount.objects.all()
 
-    counts = Category.objects.annotate(total_tasks=Count(
-        'todoitem')).order_by("-total_tasks")
-    counts = {c.name: c.total_tasks for c in counts}
-
-    return render(request, "tasks/index.html", {"counts": counts})
+    return render(request, "tasks/index.html", context)
 
 
 def filter_tasks(tags_by_task):
@@ -48,7 +52,6 @@ def tasks_by_cat(request, cat_slug=None):
         {"category": cat, "tasks": tasks, "categories": categories},
     )
 
-
 class TaskListView(ListView):
     model = TodoItem
     context_object_name = "tasks"
@@ -66,12 +69,13 @@ class TaskListView(ListView):
         tags = []
         for t in user_tasks:
             tags.append(list(t.category.all()))
-
+            print(tags)
         categories = []
         for cat in t.category.all():
             if cat not in categories:
                 categories.append(cat)
         context["categories"] = categories
+        context['priorities'] = PriorityCount.objects.all()
 
         return context
 
@@ -79,3 +83,9 @@ class TaskListView(ListView):
 class TaskDetailsView(DetailView):
     model = TodoItem
     template_name = "tasks/details.html"
+
+@cache_page(300)
+def cache_view(request):
+    date = datetime.now()
+
+    return render(request, "tasks/date_cache.html",  {"date": date})
