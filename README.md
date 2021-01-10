@@ -2,11 +2,11 @@
 
 ###Развертывание проекта на локальном устройстве:
 В командной строке набираем: 
-1. git clone https://github.com/YuriyShashurin/projectD5_10.git
-2. Переходим в папку проекта: cd pets_site
+1. git clone https://github.com/YuriyShashurin/PracticeD8.7.git
+2. Переходим в папку проекта: cd PracticeD8.7
 3. Создаем командное окружение и запускаем его
-   -python -m venv C:/YourFolder/pets_site/env
-   - Launch: C:/YourFolder/pets_site> env\Scripts\activate.bat
+   -python -m venv C:/YourFolder/PracticeD8.7/env
+   - Launch: C:/YourFolder/PracticeD8.7> env\Scripts\activate.bat
 4. Устанавливаем модули совместимостей pip install -r requirements.txt
 5. запускаем проект python manage.py runserver
 
