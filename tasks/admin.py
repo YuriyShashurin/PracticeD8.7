@@ -5,7 +5,7 @@ from tasks.models import TodoItem, Category, PriorityCount
 
 @admin.register(TodoItem)
 class TodoItemAdmin(admin.ModelAdmin):
-    list_display = ('description', 'is_completed', 'created', 'pk', 'was_priority')
+    list_display = ('description', 'is_completed', 'created', 'pk')
 
 
 @admin.register(Category)
