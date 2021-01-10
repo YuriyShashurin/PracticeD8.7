@@ -8,13 +8,13 @@ class Category(models.Model):
     name = models.CharField(max_length=256)
     todos_count = models.PositiveIntegerField(default=0)
 
-
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
         return f'{self.name} ({self.slug})'
+
 
 
 class TodoItem(models.Model):
@@ -46,6 +46,8 @@ class TodoItem(models.Model):
         "Приоритет", choices=PRIORITY_CHOICES, default=PRIORITY_MEDIUM
     )
     category = models.ManyToManyField(Category, blank=True)
+    was_priority = models.SmallIntegerField(default=0)
+
 
     def __str__(self):
         return self.description.lower()

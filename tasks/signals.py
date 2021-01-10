@@ -1,4 +1,4 @@
-from django.db.models.signals import m2m_changed, post_delete, pre_delete, post_save
+from django.db.models.signals import m2m_changed, post_delete, pre_delete, post_save, pre_save
 from django.dispatch import receiver
 from tasks.models import TodoItem, Category, PriorityCount
 from collections import Counter
@@ -51,20 +51,33 @@ def task_cats_removed(sender, instance, action, model, **kwargs):
 
 
 @receiver(post_save, sender=TodoItem)
-def add_count_of_priorities(sender, instance, **kwargs):
+def check_change_priorities(sender, instance, **kwargs):
     id = instance.priority
     title = instance.get_priority_display()
-    priority, create = PriorityCount.objects.get_or_create(id= id, title=title)
-    count = priority.count
-    count += 1
-    PriorityCount.objects.filter(id=priority.id).update(count=count)
+    #проверяем, поменялось ли при сохранении значение priority (в случае создание, отличие от дефолта =0). Если да, обновляем счетчик. Иначе, ничего не происходит
+    if instance.priority != instance.was_priority:
+        if instance.was_priority != 0:
+            # уменьшаем на 1  значение счетчика по старому приоритету
+            was_priority = PriorityCount.objects.get(id= instance.was_priority)
+            priority_count = was_priority.count
+            priority_count -= 1
+            PriorityCount.objects.filter(id=instance.was_priority).update(count=priority_count)
+        #Увеличиваем на 1 значение счетчика для новог или обновленного приоритета
+        priority, create = PriorityCount.objects.get_or_create(id= id, title=title)
+        count = priority.count
+        count += 1
+        PriorityCount.objects.filter(id=priority.id).update(count=count)
+        TodoItem.objects.filter(pk=instance.pk).update(was_priority=instance.priority)
+
     return
+
+
+
 
 @receiver(pre_delete, sender=TodoItem)
 def delete_count_of_priorities(sender, instance, **kwargs):
     id = instance.priority
     priority = PriorityCount.objects.get(id=id)
-    print(priority.count)
     count = priority.count
     count -= 1
     PriorityCount.objects.filter(id=id).update(count=count)
